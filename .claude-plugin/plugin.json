@@ -1,6 +1,6 @@
 {
   "name": "flightdeck",
-  "version": "0.6.1-sb.1",
+  "version": "0.6.1-sb.2",
   "description": "Flightdeck (fork): a live agent dashboard for Claude Code with a yas-style overview card: context against a soft limit, rate limits with burn trend, session and daily tokens, prompt cache countdown, t/m throughput, task plan and background jobs, plus the original architect, gate, agents, receipt and log panels.",
   "author": {
     "name": "Stephen Casella",
@@ -25,7 +25,7 @@
       "title": "Architect pattern",
       "description": "Regular expression (case-insensitive) for the agent types and server tools that count as the on-call architect, e.g. advisor|architect|reviewer",
       "type": "string",
-      "default": "advisor|architect"
+      "default": "advisor|architect|reviewer"
     },
     "architectLabel": {
       "title": "Architect label",
@@ -65,19 +65,19 @@
       "title": "Match agent descriptions",
       "description": "Also count an agent type as the architect when its description (not just its name) matches the pattern",
       "type": "boolean",
-      "default": false
+      "default": true
     },
     "maxCards": {
       "title": "Cards before swimlanes",
       "description": "Agent cards drawn side by side; more agents than this switch to swimlanes (1-6)",
       "type": "number",
-      "default": 3
+      "default": 6
     },
     "softLimit": {
       "title": "Context soft limit",
       "description": "Tokens the context gauge fills up to, as yas draws it: Smart, Coasting, Foggy, Cooked, Dumb at 25/50/70/90% of this",
       "type": "number",
-      "default": 200000
+      "default": 1000000
     },
     "paneColumns": {
       "title": "Pane width",

@@ -135,16 +135,16 @@ export const parseConfig = (o: Readonly<Record<string, unknown>>): Config => {
     .map(s => s.trim())
     .filter((p): p is Panel => (PANELS as readonly string[]).includes(p))
   const layout = str('layout', 'auto')
-  const max = typeof o.maxCards === 'number' ? Math.round(o.maxCards) : 3
+  const max = typeof o.maxCards === 'number' ? Math.round(o.maxCards) : 6
   const cols = typeof o.paneColumns === 'number' && Number.isFinite(o.paneColumns) ? Math.round(o.paneColumns) : 66
   return {
-    architect: safeRegExp(str('architectPattern', ''), 'advisor|architect'),
+    architect: safeRegExp(str('architectPattern', ''), 'advisor|architect|reviewer'),
     architectLabel: str('architectLabel', 'ARCHITECT'),
     gateLabel: str('gateLabel', 'GATE'),
     panels: panels.length > 0 ? [...new Set(panels)] : [...PANELS],
     motion: str('motion', 'while-active') !== 'off',
     moments: bool('moments', true),
-    matchDescriptions: bool('matchDescriptions', false),
+    matchDescriptions: bool('matchDescriptions', true),
     maxCards: Math.min(6, Math.max(1, max)),
     // The body clamps its drawing at 40 columns, so a narrower dock would only clip it.
     paneColumns: Math.max(40, cols),
@@ -152,7 +152,7 @@ export const parseConfig = (o: Readonly<Record<string, unknown>>): Config => {
     palette: str('palette', 'theme') === 'pastel' ? 'pastel' : 'theme',
     openOnStart: bool('openOnStart', true),
     statusLine: bool('statusLine', false),
-    softLimit: typeof o.softLimit === 'number' && o.softLimit >= 1000 ? Math.round(o.softLimit) : 200000,
+    softLimit: typeof o.softLimit === 'number' && o.softLimit >= 1000 ? Math.round(o.softLimit) : 1000000,
   }
 }
 

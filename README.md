@@ -13,7 +13,7 @@ The original upstream README follows below.
 /flightdeck
 ```
 
-Options live under `pluginConfigs["flightdeck@my-flightdeck"].options` in `~/.claude/settings.json`. This fork adds `softLimit` (default 200000) and the `tasks` and `bg` panels.
+Options live under `pluginConfigs["flightdeck@my-flightdeck"].options` in `~/.claude/settings.json`. This fork adds `softLimit` and the `tasks` and `bg` panels. Its defaults: `softLimit` 1000000, `architectPattern` `advisor|architect|reviewer`, `matchDescriptions` true, `maxCards` 6 and `statusLine` false.
 
 ## What this fork changes
 
