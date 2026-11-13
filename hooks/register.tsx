@@ -1039,7 +1039,8 @@ export const register: Register = (on, options) => {
       bg: cfg.panels.includes('main') || bgShown.length === 0,
       architect: !showArchitect,
       gate: g.recent.length === 0 && gateSummary(g).total === 0,
-      agents: cards.length === 0,
+      // The agents box stays even when empty, so it doesn't vanish once finished agents have left it.
+      agents: false,
       loops: lp.length === 0,
       receipt: !m.isRunning && !r,
       log: false,
@@ -1804,7 +1805,7 @@ export const register: Register = (on, options) => {
         return (
           <Box flexDirection="column" width={w}>
             {header}
-            <Text color={C.faint}>no subagents yet</Text>
+            <Text color={C.faint}>{allCards.length > 0 ? `no agents in the last 5 min · ${allCards.length} this session` : 'no subagents yet'}</Text>
           </Box>
         )
       }
