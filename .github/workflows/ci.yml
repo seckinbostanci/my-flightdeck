@@ -1,0 +1,101 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  TYPESCRIPT_VERSION: 7.0.2
+  # Keep the pinned CLI from updating itself or sending telemetry
+  DISABLE_AUTOUPDATER: 1
+  CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC: 1
+
+jobs:
+  checks:
+    name: checks (Claude Code ${{ matrix.claude-code }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # The oldest Claude Code the README promises (badge, Install, Troubleshooting):
+          # move the two together. Each test draws against its own engine's element
+          # table, so a prop or event newer than this fails here, not in a session (#28).
+          - claude-code: 2.1.289
+          # The newest pinned: it also writes the API types tsc checks against.
+          - claude-code: 2.1.309
+            types: true
+    env:
+      CLAUDE_CODE_VERSION: ${{ matrix.claude-code }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+          # No lockfile here: the versions above are the cache key
+          cache-dependency-path: .github/workflows/ci.yml
+
+      - name: Install Claude Code
+        run: |
+          npm install -g "@anthropic-ai/claude-code@$CLAUDE_CODE_VERSION"
+          claude --version
+
+      - name: claude plugin validate .
+        run: claude plugin validate .
+
+      - name: claude plugin test .
+        run: claude plugin test .
+
+      # tsc needs .claude-plugin/types/, which Claude Code writes only when an
+      # interactive session loads the mod from --plugin-dir (print mode never
+      # does). A throwaway config marks onboarding done and this folder trusted,
+      # so the session starts with no credentials and makes no model call; it is
+      # stopped as soon as the types are on disk. Only the newest leg writes them
+      # and runs tsc: the code is type-checked against the newest engine's API.
+      - name: Write the API types
+        if: matrix.types
+        env:
+          CLAUDE_CONFIG_DIR: ${{ runner.temp }}/claude-config
+          TERM: xterm-256color
+        run: |
+          mkdir -p "$CLAUDE_CONFIG_DIR"
+          printf '{"hasCompletedOnboarding":true,"theme":"dark","projects":{"%s":{"hasTrustDialogAccepted":true}}}\n' \
+            "$(pwd -P)" > "$CLAUDE_CONFIG_DIR/.claude.json"
+          screen="$RUNNER_TEMP/claude-screen.log"
+          # sleep keeps stdin open, so script never hands the session an EOF
+          setsid bash -c "sleep 300 | script -qfc 'claude --plugin-dir .' '$screen'" > /dev/null 2>&1 &
+          pid=$!
+          types=.claude-plugin/types
+          for _ in $(seq 60); do
+            if [ -f "$types/tsconfig.json" ] && [ -f "$types/claude-code/index.d.ts" ] \
+              && [ -f "$types/claude-code-tools/index.d.ts" ] && [ -f "$types/claude-code-mcp/index.d.ts" ]; then
+              break
+            fi
+            sleep 1
+          done
+          sleep 1
+          kill -TERM -- "-$pid" 2> /dev/null || true
+          wait "$pid" 2> /dev/null || true
+          if ! head -n 1 "$types/claude-code/index.d.ts" 2> /dev/null | grep -qF "Written by Claude Code $CLAUDE_CODE_VERSION."; then
+            echo "::error::Claude Code did not write $types/ for $CLAUDE_CODE_VERSION. Its screen:"
+            cat -v "$screen" 2> /dev/null | tail -c 4000
+            exit 1
+          fi
+          ls -R "$types"
+
+      - name: npx -p typescript tsc -p .
+        if: matrix.types
+        run: npx -y -p "typescript@$TYPESCRIPT_VERSION" tsc -p .

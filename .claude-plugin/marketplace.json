@@ -1,0 +1,17 @@
+{
+  "name": "my-flightdeck",
+  "metadata": {
+    "description": "My Flightdeck: a fork of scasella/claude-flightdeck with a yas-style dashboard card (context, limits, tokens, cache, throughput, plan, background jobs)."
+  },
+  "owner": {
+    "name": "Seçkin Bostancı",
+    "url": "https://github.com/seckinbostanci"
+  },
+  "plugins": [
+    {
+      "name": "flightdeck",
+      "source": "./",
+      "description": "A live pane showing what your session's agents are doing, drawn only from real session events."
+    }
+  ]
+}
