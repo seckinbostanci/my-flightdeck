@@ -151,7 +151,7 @@ export const parseConfig = (o: Readonly<Record<string, unknown>>): Config => {
     layout: layout === 'compact' || layout === 'wide' || layout === 'mini' ? layout : 'auto',
     palette: str('palette', 'theme') === 'pastel' ? 'pastel' : 'theme',
     openOnStart: bool('openOnStart', true),
-    statusLine: bool('statusLine', false),
+    statusLine: bool('statusLine', true),
     softLimit: typeof o.softLimit === 'number' && o.softLimit >= 1000 ? Math.round(o.softLimit) : 1000000,
   }
 }

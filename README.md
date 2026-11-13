@@ -13,7 +13,7 @@ The original upstream README follows below.
 /flightdeck
 ```
 
-Options live under `pluginConfigs["flightdeck@my-flightdeck"].options` in `~/.claude/settings.json`. This fork adds `softLimit` and the `tasks` and `bg` panels. Its defaults: `softLimit` 1000000, `architectPattern` `advisor|architect|reviewer`, `matchDescriptions` true, `maxCards` 6 and `statusLine` false.
+Options live under `pluginConfigs["flightdeck@my-flightdeck"].options` in `~/.claude/settings.json`. This fork adds `softLimit` and the `tasks` and `bg` panels. Its defaults: `softLimit` 1000000, `architectPattern` `advisor|architect|reviewer`, `matchDescriptions` true, `maxCards` 6 and `statusLine` true.
 
 ## What this fork changes
 
@@ -29,7 +29,7 @@ Options live under `pluginConfigs["flightdeck@my-flightdeck"].options` in `~/.cl
 - **Removed:** the $ cost display.
 - **Session log:** scrolls on its own with `k`/`j` or ▲/▼.
 - **Agents panel:** a finished agent leaves it five minutes after it ends. The box stays when it is empty.
-- **Status-line entry:** off by default (`statusLine: false`); the pane shows everything.
+- **Status-line entry:** on by default (`statusLine: true`): a one-line summary under the prompt.
 - **Day book:** daily totals are kept in the plugin's `$.store`. No files are written.
 - **Git:** this fork runs `git status` to read the folder's git state. Upstream runs no processes.
 - **Tests:** the upstream tests were not updated for these changes.
