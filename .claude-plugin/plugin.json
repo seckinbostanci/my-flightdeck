@@ -1,6 +1,6 @@
 {
   "name": "flightdeck",
-  "version": "0.6.1-sb.3",
+  "version": "0.6.1-sb.4",
   "description": "Flightdeck (fork): a live agent dashboard for Claude Code with a yas-style overview card: context against a soft limit, rate limits with burn trend, session and daily tokens, prompt cache countdown, t/m throughput, task plan and background jobs, plus the original architect, gate, agents, receipt and log panels.",
   "author": {
     "name": "Stephen Casella",
@@ -117,7 +117,7 @@
       "title": "Status line",
       "description": "Show context, agents, consults and denials in the status line",
       "type": "boolean",
-      "default": true
+      "default": false
     }
   }
 }
