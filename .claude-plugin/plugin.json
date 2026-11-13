@@ -117,7 +117,7 @@
       "title": "Status line",
       "description": "Show context, agents, consults and denials in the status line",
       "type": "boolean",
-      "default": true
+      "default": false
     }
   }
 }

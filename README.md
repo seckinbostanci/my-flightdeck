@@ -28,6 +28,8 @@ Options live under `pluginConfigs["flightdeck@my-flightdeck"].options` in `~/.cl
 - **Agents:** per-agent t/m, share of the session, total and output tokens, and model.
 - **Removed:** the $ cost display.
 - **Session log:** scrolls on its own with `k`/`j` or ▲/▼.
+- **Agents panel:** a finished agent leaves it five minutes after it ends.
+- **Status-line entry:** off by default (`statusLine: false`); the pane shows everything.
 - **Day book:** daily totals are kept in the plugin's `$.store`. No files are written.
 - **Git:** this fork runs `git status` to read the folder's git state. Upstream runs no processes.
 - **Tests:** the upstream tests were not updated for these changes.

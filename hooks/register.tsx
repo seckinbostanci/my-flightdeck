@@ -995,7 +995,7 @@ export const register: Register = (on, options) => {
     const hasClient = 'Client' in els
     const hasRail = hasClient && !faulted.has(faultKey(e.surface, 'rail.tsx'))
     const hasClock = hasClient && !faulted.has(faultKey(e.surface, 'elapsed.tsx'))
-    const [m, u, a, g, cards, lp, lines, t, r, v, now, mono, rp, tk, kt, pl, bgs, dy] = await Promise.all([
+    const [m, u, a, g, allCards, lp, lines, t, r, v, now, mono, rp, tk, kt, pl, bgs, dy] = await Promise.all([
       getMain($),
       getUsage($),
       getArchitect($),
@@ -1015,6 +1015,9 @@ export const register: Register = (on, options) => {
       read($, bg).then(x => normalize(DEFAULT_BG, x)),
       read($, day).then(x => normalize(DEFAULT_DAY, x)),
     ])
+    // Finished agents leave the panel five minutes after they end; running ones always show.
+    const CARD_KEEP_MS = 5 * 60_000
+    const cards = allCards.filter(c => c.status === 'running' || c.endedAt === null || now - c.endedAt < CARD_KEEP_MS)
     // The body's own width, down to the narrowest dock Claude Code seats (24): a wider drawing is cut off at the frame.
     const W = Math.max(24, e.props.bodyColumns)
     const layout = v.layout ?? cfg.layout
